@@ -12,8 +12,6 @@ by lawliet.zou(lawliet.zou@gmail.com)
 #include <SoftwareSerial.h>
 #include <stdio.h>
 
-#define DEFAULT_TIMEOUT 5
-
 char gprsBuffer[64];
 int i = 0;
 char *s = NULL;
@@ -31,8 +29,7 @@ void setup() {
 }
 
 void loop() {
-
-   if(gprsTest.sim800.available()) {
+   if(gprsTest.serialSIM800.available()) {
        inComing = 1;
    }else{
        delay(100);
@@ -45,9 +42,9 @@ void loop() {
       if(NULL != strstr(gprsBuffer,"RING")) {
           gprsTest.answer();
       }else if(NULL != (s = strstr(gprsBuffer,"+CMTI: \"SM\""))) { //SMS: $$+CMTI: "SM",24$$
-          char message[10];
+          char message[MESSAGE_LENGTH];
           int messageIndex = atoi(s+12);
-          gprsTest.readSMS(messageIndex, message, 1);
+          gprsTest.readSMS(messageIndex, message,MESSAGE_LENGTH);
           Serial.print(message);
      }
      gprsTest.cleanBuffer(gprsBuffer,32);  
