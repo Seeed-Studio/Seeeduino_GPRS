@@ -8,12 +8,12 @@ AT command to control SIM800' Bluetooth.
 create on 2013/12/5, version: 0.1
 by lawliet.zou(lawliet.zou@gmail.com)
 */
-#include <gprs.h>
+#include <bluetooth.h>
 #include <SoftwareSerial.h>
 
 #define DEFAULT_TIMEOUT 5
 
-Bluetooth bluetooth(8,7,9,9600); //TX,RX,PWR,BaudRate
+BlueTooth bluetooth(8,7,9,9600); //TX,RX,PWR,BaudRate
 
 char bluetoothBuffer[64];
 int start = 0;
@@ -28,7 +28,7 @@ void setup() {
 }
 
 void loop() {
-  if(bluetooth.sim800.available()) {
+  if(bluetooth.serialSIM800.available()) {
     start = 1;
   }else{
     delay(500);

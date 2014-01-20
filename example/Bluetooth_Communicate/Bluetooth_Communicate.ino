@@ -11,13 +11,13 @@ Profile, I will test it later!
 create on 2013/12/5, version: 0.1
 by lawliet.zou(lawliet.zou@gmail.com)
 */
-#include <gprs.h>
+#include <bluetooth.h>
 #include <SoftwareSerial.h>
 
 #define DEFAULT_TIMEOUT 5
 #define TARGET_DEVICE_NAME  "ME863"
 
-Bluetooth bluetooth(8,7,9,9600); //TX,RX,PWR,BaudRate
+BlueTooth bluetooth(8,7,9,9600); //TX,RX,PWR,BaudRate
 int bluetoothID = 0;
 char recv[16];
 int start = 0;
