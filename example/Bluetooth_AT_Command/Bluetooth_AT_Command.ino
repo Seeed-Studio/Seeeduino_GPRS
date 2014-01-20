@@ -12,10 +12,10 @@ by lawliet.zou(lawliet.zou@gmail.com)
 #include <SoftwareSerial.h>
 
 #define DEFAULT_TIMEOUT 5
-
+#define BT_BUF_LEN      32
 BlueTooth bluetooth(8,7,9,9600); //TX,RX,PWR,BaudRate
 
-char bluetoothBuffer[64];
+char bluetoothBuffer[BT_BUF_LEN];
 int start = 0;
     
 void setup() {
@@ -32,12 +32,11 @@ void loop() {
     start = 1;
   }else{
     delay(500);
-    Serial.print("loop\r\n");
   }
 
   if(start){
     //bluetooth.cleanBuffer(bluetoothBuffer,64);
-    bluetooth.readBuffer(bluetoothBuffer,64,DEFAULT_TIMEOUT);
+    bluetooth.readBuffer(bluetoothBuffer,BT_BUF_LEN,DEFAULT_TIMEOUT);
     if(NULL != strstr(bluetoothBuffer,"+BTCONNECTING:")){
       bluetooth.acceptConnect();
     }
