@@ -116,10 +116,7 @@ int BlueTooth::unPair(void)
 
 int BlueTooth::acceptPairing(void)
 {
-	if(0 != sendCmdAndWaitForResp("AT+BTPAIR=1,1\r\n", "OK", DEFAULT_TIMEOUT)){
-		ERROR("\r\nERROR:AT+BTPAIR\r\n");
-		return -1;
-	}
+    sendCmd("AT+BTPAIR=1,1\r\n");
 	return 0;
 }
 

@@ -37,6 +37,9 @@ void loop() {
   if(start){
     //bluetooth.cleanBuffer(bluetoothBuffer,64);
     bluetooth.readBuffer(bluetoothBuffer,BT_BUF_LEN,DEFAULT_TIMEOUT);
+    if(NULL != strstr(bluetoothBuffer,"+BTPAIRING:")){
+      bluetooth.acceptPairing();
+    }
     if(NULL != strstr(bluetoothBuffer,"+BTCONNECTING:")){
       bluetooth.acceptConnect();
     }
