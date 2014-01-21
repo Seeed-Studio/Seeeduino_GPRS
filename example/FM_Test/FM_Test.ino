@@ -22,15 +22,18 @@ void setup() {
   }
   fm.setVolume(6); //0,1,2,3,4,5,6
   fm.scanChannel();
+  Serial.println("FM init success");
 }
 
 void loop() {
-  while(LOW == digitalRead(channelButton)){
+  while(HIGH == digitalRead(channelButton)){
     delay(50);
   }
   Serial.print("change Channel\r\n");
   fm.channelNext();
-  delay(200);
+  while(LOW == digitalRead(channelButton)){
+    delay(50);
+  }
 }
 
 
