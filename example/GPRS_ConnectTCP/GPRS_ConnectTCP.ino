@@ -12,12 +12,12 @@ by lawliet.zou(lawliet.zou@gmail.com)
 #include <gprs.h>
 #include <SoftwareSerial.h>
 
-#define PHONE_NUMBER    "13925257382"
+#define PHONE_NUMBER    "139****7382"
 #define IP_ADDRSS       "216.52.233.120" //api.xively.com
 #define PORT            80 //port addr
-#define FEED_ID         "259586273"
-#define SENSOR_ID       "LED"
-#define XIVELY_KEY      "d3V6YQek8iBSxoFg0xZYkZBhpBhXTH485XFY0ubPqZIvm0e8"
+#define FEED_ID         "YOUR FEED ID"
+#define SENSOR_ID       "YOUR SENSOR ID"
+#define XIVELY_KEY      "YOUR XIVELY KEY"
 #define REQUEST_LENGTH  36
 #define DATA_LENGTH     90
 #define HEAD_LEN        270
@@ -42,11 +42,6 @@ int putDataToXively(char* sensorValue)
     goto STOP;
   }
 STOP:
-#if 0
-  while(gprsTest.serialSIM800.available()){
-     gprsTest.serialSIM800.read();
-  }
-#endif
   gprsTest.closeTCP();
   return 0;
 }
