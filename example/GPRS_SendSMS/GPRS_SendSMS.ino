@@ -16,13 +16,14 @@ GPRS gprsTest(8,7,9,9600,"150****9566");//TX,RX,PWR,BaudRate,PhoneNumber
 void setup() {
   Serial.begin(9600);
   gprsTest.preInit();
+  delay(1000);
   while(0 != gprsTest.init()) {
       delay(1000);
       Serial.print("init error\r\n");
   }  
+  gprsTest.sendSMS("150****9566","hello,world"); //define phone number and text
 }
 
 void loop() {
-  gprsTest.sendSMS("150****9566","hello,world"); //define phone number and text
-  while(1){delay(1000);}
+  //nothing to do
 }
