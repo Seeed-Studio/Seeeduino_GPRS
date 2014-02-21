@@ -27,8 +27,8 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 * THE SOFTWARE.
 */
-#ifndef __GPRS_H__
-#define __GPRS_H__
+#ifndef __FM_H__
+#define __FM_H__
 
 #include "sim800.h"
 
