@@ -1,10 +1,16 @@
 /*
-GPRS Loop Handle
+Sketch: GPRS Loop Handle
 
-This sketch is used to test seeeduino GPRS's call answering and 
-reading SMS function.to make it work, you should insert SIM card
-to Seeeduino GPRS and replace the phoneNumber,enjoy it!
-
+Function: This sketch is used to test seeeduino GPRS's call answering and reading
+SMS function.to make it work, you should insert SIM card to Seeeduino GPRS and 
+replace the phoneNumber,enjoy it!
+*********************************************************************************
+note: the following pins has been used and should not be used for other purposes.
+  pin 8   // tx pin
+  pin 7   // rx pin
+  pin 9   // power key pin
+  pin 12  // power status pin
+*********************************************************************************
 create on 2013/12/5, version: 0.1
 by lawliet.zou(lawliet.zou@gmail.com)
 */
@@ -17,37 +23,39 @@ int i = 0;
 char *s = NULL;
 int inComing = 0;
 
-GPRS gprsTest(8,7,9,9600,"150****9566");//TX,RX,PWR,BaudRate,PhoneNumber
+GPRS gprs;
 
 void setup() {
   Serial.begin(9600);
-  gprsTest.preInit();
-  while(0 != gprsTest.init()) {
+  Serial.println("GPRS - LoopHandle Test...");
+  gprs.preInit();
+  while(0 != gprs.init()) {
       delay(1000);
       Serial.print("init error\r\n");
   }  
+  Serial.println("Init success, start to monitor your call or message...");
 }
 
 void loop() {
-   if(gprsTest.serialSIM800.available()) {
+   if(gprs.serialSIM800.available()) {
        inComing = 1;
    }else{
        delay(100);
    }
    
    if(inComing){
-      gprsTest.readBuffer(gprsBuffer,32,DEFAULT_TIMEOUT);
+      gprs.readBuffer(gprsBuffer,32,DEFAULT_TIMEOUT);
       Serial.print(gprsBuffer);
       
       if(NULL != strstr(gprsBuffer,"RING")) {
-          gprsTest.answer();
+          gprs.answer();
       }else if(NULL != (s = strstr(gprsBuffer,"+CMTI: \"SM\""))) { //SMS: $$+CMTI: "SM",24$$
           char message[MESSAGE_LENGTH];
           int messageIndex = atoi(s+12);
-          gprsTest.readSMS(messageIndex, message,MESSAGE_LENGTH);
+          gprs.readSMS(messageIndex, message,MESSAGE_LENGTH);
           Serial.print(message);
      }
-     gprsTest.cleanBuffer(gprsBuffer,32);  
+     gprs.cleanBuffer(gprsBuffer,32);  
      inComing = 0;
    }
 }

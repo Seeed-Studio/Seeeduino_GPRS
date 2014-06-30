@@ -1,18 +1,22 @@
 /*
-GPRS Connect TCP
+Sketch: GPRS Connect TCP
 
-This sketch is used to test seeeduino GPRS's TCP Connect function.
-to make it work, you should insert SIM card to Seeeduino GPRS 
-and replace the phoneNumber.besides this, we upload sensor value to xively,
-so you have to be familiar with xively. enjoy it!
-
+Function: This sketch is used to test seeeduino GPRS's TCP Connect function.to make
+it work, you should insert SIM card to Seeeduino GPRS and replace the phoneNumber.
+besides this, we upload sensor value to xively,so you have to be familiar with xively. enjoy it!
+*********************************************************************************
+note: the following pins has been used and should not be used for other purposes.
+  pin 8   // tx pin
+  pin 7   // rx pin
+  pin 9   // power key pin
+  pin 12  // power status pin
+*********************************************************************************
 create on 2013/12/5, version: 0.1
 by lawliet.zou(lawliet.zou@gmail.com)
 */
 #include <gprs.h>
 #include <SoftwareSerial.h>
 
-#define PHONE_NUMBER    "139****7382"
 #define IP_ADDRSS       "216.52.233.120" //api.xively.com
 #define PORT            80 //port addr
 #define FEED_ID         "YOUR FEED ID"
@@ -22,7 +26,7 @@ by lawliet.zou(lawliet.zou@gmail.com)
 #define DATA_LENGTH     90
 #define HEAD_LEN        270
 int soundSensor = A4;
-GPRS gprsTest(8,7,9,9600,PHONE_NUMBER); //TX,RX,PWR,BaudRate,PhoneNumber
+GPRS gprs;
 
 int putDataToXively(char* sensorValue)
 {
@@ -33,27 +37,29 @@ int putDataToXively(char* sensorValue)
   snprintf(dataStream,DATA_LENGTH,"{\"version\":\"1.0.0\", \"datastreams\" : [{ \"id\" : \"%s\", \"current_value\" : \"%s\"}]}\r\n",SENSOR_ID,sensorValue);
   int dataLen = strlen(dataStream);
   snprintf(head,HEAD_LEN,"%sHost: api.xively.com\r\nX-ApiKey: %s\r\nUser-Agent: Xively-Arduino-Lib/1.0\r\nContent-Length: %d\r\n\r\n%s",request,XIVELY_KEY,dataLen,dataStream);
-  if(0 != gprsTest.connectTCP(IP_ADDRSS,PORT)){
+  if(0 != gprs.connectTCP(IP_ADDRSS,PORT)){
     Serial.println("connect TCP error");
     goto STOP;
   }
-  if(0 != gprsTest.sendTCPData(head)){
+  if(0 != gprs.sendTCPData(head)){
     Serial.println("send TCP data error");
     goto STOP;
   }
 STOP:
-  gprsTest.closeTCP();
+  gprs.closeTCP();
   return 0;
 }
 
 void setup() {
   Serial.begin(9600);
+  Serial.println("GPRS - TCP Connection Test...");
   pinMode(soundSensor,INPUT);
-  gprsTest.preInit();
-  while(0 != gprsTest.init()) {
+  gprs.preInit();
+  while(0 != gprs.init()) {
      delay(1000);
      Serial.println("init error");
   }  
+  Serial.println("Init success, start to upload data to xively...");
 }
 
 void loop() {

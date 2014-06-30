@@ -39,7 +39,7 @@ class BlueTooth: public SIM800
 public:
 	/** Create BlueTooth instance	
 	 */
-	BlueTooth(int tx, int rx, int power, int baudRate): SIM800(tx,rx,power,baudRate){
+	BlueTooth(int baudRate = 9600): SIM800(baudRate){
 		bluetoothPower = 0;
 	};
 

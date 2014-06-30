@@ -39,7 +39,7 @@ class FM: public SIM800
 {
 
 public:
-	FM(int tx, int rx, int power, int baudRate) : SIM800(tx,rx,power,baudRate){
+	FM(int baudRate = 19200) : SIM800(baudRate){
 		fmChannelCount = 0;
 		fmCurrentChannel = 0;
 	};

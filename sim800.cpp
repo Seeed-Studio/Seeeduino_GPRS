@@ -32,10 +32,9 @@
 
 void SIM800::preInit(void)
 {
-    int powerStatus = 12;
-    pinMode(powerStatus,INPUT);
+    pinMode(SIM800_POWER_STATUS,INPUT);
     delay(500);
-    if(LOW == digitalRead(powerStatus)){
+    if(LOW == digitalRead(SIM800_POWER_STATUS)){
         delay(800);
         digitalWrite(powerPin,HIGH);
         delay(200);

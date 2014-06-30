@@ -44,9 +44,7 @@ public:
     /** Create GPRS instance
      *  @param number default phone number during mobile communication
      */
-    GPRS(int tx, int rx, int power, int baudRate, const char* number):SIM800(tx,rx,power,baudRate){
-        phoneNumber = number;
-    };
+    GPRS(int baudRate = 9600):SIM800(baudRate){};
 	
     /** initialize GPRS module including SIM card check & signal strength
      *  @returns
@@ -141,8 +139,5 @@ public:
      *      -1 on error
      */
     int shutTCP(void);
-	
-private:
-	const char* phoneNumber;
 };
 #endif
