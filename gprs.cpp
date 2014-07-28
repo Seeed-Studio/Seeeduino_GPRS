@@ -1,43 +1,43 @@
 /*
-* gprs.cpp 
-* A library for SeeedStudio seeeduino GPRS shield 
-*  
-* Copyright (c) 2013 seeed technology inc. 
-* Author      	: 	lawliet.zou(lawliet.zou@gmail.com)
-* Create Time	: 	Dec 23, 2013 
-* Change Log 	: 	
-*
-* The MIT License (MIT)
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the "Software"), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-* THE SOFTWARE.
-*/
+ * gprs.cpp
+ * A library for SeeedStudio seeeduino GPRS shield 
+ *
+ * Copyright (c) 2013 seeed technology inc.
+ * Author        :   lawliet zou
+ * Create Time   :   Dec 2013
+ * Change Log    :
+ *
+ * The MIT License (MIT)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 
 #include <stdio.h>
 #include "gprs.h"
 
 int GPRS::init(void)
-{	
-	for(int i = 0; i < 2; i++){
-		sendCmd("AT\r\n");
-		delay(100);
-	}
-	sendCmd("AT+CFUN=1\r\n"); 
+{   
+    for(int i = 0; i < 2; i++){
+        sendCmd("AT\r\n");
+        delay(100);
+    }
+    sendCmd("AT+CFUN=1\r\n"); 
     if(0 != checkSIMStatus()) {
         ERROR("ERROR:checkSIMStatus");
         return -1;
@@ -67,7 +67,7 @@ int GPRS::checkSIMStatus(void)
 
 int GPRS::networkCheck(void)
 {
-	delay(1000);
+    delay(1000);
     if(0 != sendCmdAndWaitForResp("AT+CGREG?\r\n","+CGREG: 0,1",DEFAULT_TIMEOUT*3)) { 
         ERROR("ERROR:CGREG");
         return -1;
@@ -96,21 +96,21 @@ int GPRS::sendSMS(char *number, char *data)
     delay(1000);
     serialSIM800.write(data);
     delay(500);
-	sendEndMark();
-	return 0;
+    sendEndMark();
+    return 0;
 }
 
 int GPRS::readSMS(int messageIndex, char *message,int length)
 {
-	int i = 0;
+    int i = 0;
     char gprsBuffer[100];
-	char cmd[16];
+    char cmd[16];
     char *p,*s;
-	
-	sendCmdAndWaitForResp("AT+CMGF=1\r\n","OK",DEFAULT_TIMEOUT);
-	delay(1000);
-	sprintf(cmd,"AT+CMGR=%d\r\n",messageIndex);
-	serialSIM800.write(cmd);
+    
+    sendCmdAndWaitForResp("AT+CMGF=1\r\n","OK",DEFAULT_TIMEOUT);
+    delay(1000);
+    sprintf(cmd,"AT+CMGR=%d\r\n",messageIndex);
+    serialSIM800.write(cmd);
     cleanBuffer(gprsBuffer,100);
     readBuffer(gprsBuffer,100,DEFAULT_TIMEOUT);
 
@@ -136,14 +136,14 @@ int GPRS::deleteSMS(int index)
 
 int GPRS::callUp(char *number)
 {
-	char cmd[24];
+    char cmd[24];
     if(0 != sendCmdAndWaitForResp("AT+COLP=1\r\n","OK",5)) {
         ERROR("COLP");
         return -1;
     }
     delay(1000);
-	sprintf(cmd,"\r\nATD%s;\r\n", number);
-	serialSIM800.write(cmd);
+    sprintf(cmd,"\r\nATD%s;\r\n", number);
+    serialSIM800.write(cmd);
     return 0;
 }
 
