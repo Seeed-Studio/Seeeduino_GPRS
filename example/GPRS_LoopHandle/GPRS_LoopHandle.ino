@@ -27,6 +27,7 @@ GPRS gprs;
 
 void setup() {
   Serial.begin(9600);
+  while(!Serial);;
   Serial.println("GPRS - LoopHandle Test...");
   gprs.preInit();
   while(0 != gprs.init()) {
