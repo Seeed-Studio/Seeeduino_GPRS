@@ -22,6 +22,7 @@ FM fm;
 void setup() {
   pinMode(channelButton,INPUT);
   Serial.begin(9600);
+  while(!Serial);;
   Serial.println("FM Test...");
   fm.preInit();
   while(0 != fm.powerOn()){
