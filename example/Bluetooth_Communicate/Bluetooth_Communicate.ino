@@ -32,6 +32,7 @@ int start = 0;
     
 void setup() {
   Serial.begin(9600);
+  while(!Serial);;
   Serial.println("Bluetooth Communication Test...");
   bluetooth.preInit();
   delay(3*1000);
