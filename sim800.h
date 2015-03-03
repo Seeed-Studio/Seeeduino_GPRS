@@ -41,7 +41,6 @@
 #define SIM800_RX_PIN           7
 #define SIM800_POWER_PIN        9
 #define SIM800_POWER_STATUS     12
-#define SIM800_BAUDRATE         9600
 
 #define UART_DEBUG
 
