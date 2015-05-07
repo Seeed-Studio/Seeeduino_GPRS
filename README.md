@@ -1,5 +1,9 @@
 ##Seeeduino GPRS
 [![Seeeduino GPRS](http://www.seeedstudio.com/wiki/images/2/2c/IMG_20140630_153006.jpg)](http://www.seeedstudio.com/wiki/Seeeduino_GPRS)
+<br>
+Note：There is another library has better performance [GPRS SIM900](https://github.com/Seeed-Studio/GPRS_SIM900), to use it, exchange the RX and TX pins.<br>
++ #define PIN_TX    7    ------   #define PIN_TX    8
++ #define PIN_RX    8    ------   #define PIN_RX    7
 
 Seeeduino GPRS is a IoT panel, you can connect to the internet through GPRS wireless network with it. Making/answering voice calls and sending/receiving SMS messages are also supported. Meanwhile, Seeeduino GPRS supports FM radio function and bluetooth communication. For more information, you can visit our [Wiki](http://www.seeedstudio.com/wiki/Seeeduino_GPRS)
 
