@@ -60,6 +60,14 @@ void setup() {
      delay(1000);
      Serial.println("init error");
   }  
+  while(!gprs.join("cmnet")) {  //change "cmnet" to your own VPN
+      Serial.println("gprs join network error");
+      delay(2000);
+  }
+  // successful DHCP
+  Serial.print("IP Address is ");
+  Serial.println(gprs.getIPAddress());
+  
   Serial.println("Init success, start to upload data to xively...");
 }
 
