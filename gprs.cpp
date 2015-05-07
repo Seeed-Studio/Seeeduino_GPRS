@@ -1,6 +1,6 @@
 /*
  * gprs.cpp
- * A library for SeeedStudio seeeduino GPRS shield 
+ * A library for SeeedStudio seeeduino GPRS shield
  *
  * Copyright (c) 2013 seeed technology inc.
  * Author        :   lawliet zou
@@ -32,17 +32,98 @@
 #include "gprs.h"
 
 int GPRS::init(void)
-{   
+{
+#if 0
     for(int i = 0; i < 2; i++){
         sendCmd("AT\r\n");
         delay(100);
     }
-    sendCmd("AT+CFUN=1\r\n"); 
+    sendCmd("AT+CFUN=1\r\n");
     if(0 != checkSIMStatus()) {
         ERROR("ERROR:checkSIMStatus");
         return -1;
     }
     return 0;
+
+#endif
+    if(!sendCmdAndWaitForResp("AT\r\n","OK\r\n",DEFAULT_TIMEOUT*3)){
+      return 0;
+    }
+    if(!sendCmdAndWaitForResp("AT+CFUN=1\r\n","OK\r\n",DEFAULT_TIMEOUT*3)){
+      return 0;
+    }
+    if(!checkSIMStatus()) {
+		  return false;
+    }
+    return 1;
+
+}
+
+bool GPRS::join(const char *apn, const char *userName, const char *passWord)
+{
+    char cmd[64];
+    char ipAddr[32];
+    char gprsBuffer[32];
+    //Select multiple connection
+    //sim900_check_with_cmd("AT+CIPMUX=1\r\n","OK",DEFAULT_TIMEOUT,CMD);
+
+    //set APN. OLD VERSION
+/*    snprintf(cmd,sizeof(cmd),"AT+CSTT=\"%s\",\"%s\",\"%s\"\r\n",_apn,_userName,_passWord);
+    sim900_check_with_cmd(cmd, "OK\r\n", DEFAULT_TIMEOUT,CMD);
+*/
+
+
+    sendCmd("AT+CSTT=\"");
+    sendCmd(apn);
+    sendCmd("\",\"");
+    sendCmd(userName);
+    sendCmd("\",\"");
+    sendCmd(passWord);
+    //sim900_check_with_cmd("\"\r\n", "OK\r\n", CMD);
+    sendCmdAndWaitForResp("\"\r\n","OK\r\n",DEFAULT_TIMEOUT*3);
+
+    //Brings up wireless connection
+    sendCmdAndWaitForResp("AT+CIICR\r\n","OK\r\n",DEFAULT_TIMEOUT*3);
+
+    //Get local IP address
+    sendCmd("AT+CIFSR\r\n");
+    cleanBuffer(ipAddr,32);
+    readBuffer(ipAddr,32,2);
+#if 1
+    Serial.print("ipAddr: ");
+    Serial.println(ipAddr);
+#endif
+
+    if(NULL != strstr(ipAddr,"AT+CIFSR")) {
+        _ip = str_to_ip(ipAddr+12);
+        if(_ip != 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
+uint32_t GPRS::str_to_ip(const char* str)
+{
+    uint32_t ip = 0;
+    char* p = (char*)str;
+    for(int i = 0; i < 4; i++) {
+        ip |= atoi(p);
+        p = strchr(p, '.');
+        if (p == NULL) {
+            break;
+        }
+        ip <<= 8;
+        p++;
+    }
+    return ip;
+}
+
+//HACERR lo de la IP gasta muuuucho espacio (ver .h y todo esto)
+char* GPRS::getIPAddress()
+{
+    snprintf(ip_string, sizeof(ip_string), "%d.%d.%d.%d", (_ip>>24)&0xff,(_ip>>16)&0xff,(_ip>>8)&0xff,_ip&0xff);
+    return ip_string;
 }
 
 int GPRS::checkSIMStatus(void)
@@ -57,7 +138,7 @@ int GPRS::checkSIMStatus(void)
             break;
         }
         count++;
-        delay(1000);
+        delay(300);
     }
     if(count == 3) {
         return -1;
@@ -68,7 +149,7 @@ int GPRS::checkSIMStatus(void)
 int GPRS::networkCheck(void)
 {
     delay(1000);
-    if(0 != sendCmdAndWaitForResp("AT+CGREG?\r\n","+CGREG: 0,1",DEFAULT_TIMEOUT*3)) { 
+    if(0 != sendCmdAndWaitForResp("AT+CGREG?\r\n","+CGREG: 0,1",DEFAULT_TIMEOUT*3)) {
         ERROR("ERROR:CGREG");
         return -1;
     }
@@ -106,7 +187,7 @@ int GPRS::readSMS(int messageIndex, char *message,int length)
     char gprsBuffer[100];
     char cmd[16];
     char *p,*s;
-    
+
     sendCmdAndWaitForResp("AT+CMGF=1\r\n","OK",DEFAULT_TIMEOUT);
     delay(1000);
     sprintf(cmd,"AT+CMGR=%d\r\n",messageIndex);
@@ -191,6 +272,3 @@ int GPRS::shutTCP(void)
     sendCmd("AT+CIPSHUT\r\n");
     return 0;
 }
-
-
-
