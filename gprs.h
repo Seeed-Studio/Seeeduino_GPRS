@@ -1,6 +1,6 @@
 /*
  * gprs.h
- * A library for SeeedStudio seeeduino GPRS shield 
+ * A library for SeeedStudio seeeduino GPRS shield
  *
  * Copyright (c) 2013 seeed technology inc.
  * Author        :   lawliet zou
@@ -35,23 +35,46 @@
 
 /** GPRS class.
  *  used to realize GPRS communication
- */ 
+ */
 #define MESSAGE_LENGTH  20
- 
+
 class GPRS: public SIM800
 {
 public:
+    uint32_t _ip;
+    char ip_string[20];
+
     /** Create GPRS instance
      *  @param number default phone number during mobile communication
      */
     GPRS(int baudRate = 9600):SIM800(baudRate){};
-    
+
     /** initialize GPRS module including SIM card check & signal strength
      *  @returns
      *      0 on success
      *      -1 on error
      */
     int init(void);
+
+    /** Join APN
+     *  @return
+     *        true Jion APN successfully
+     *        false failed to join VPN
+     */
+    bool join(const char  *apn = 0, const char *userName = 0, const char *passWord = 0);
+
+
+    /** parse IP string
+     *  @return
+     *      ip in hex
+     */
+    uint32_t str_to_ip(const char* str);
+
+    /** get Ip address
+     *  @return
+     *       IP string
+     */
+    char* getIPAddress();
 
     /** check SIM card' Status
      *  @returns
@@ -108,7 +131,7 @@ public:
      *      -1 on error
      */
     int answer(void);
-    
+
     /** build TCP connect
      *  @param  ip  ip address which will connect to
      *  @param  port    TCP server' port number
