@@ -9,7 +9,7 @@ note: the following pins has been used and should not be used for other purposes
   pin 9   // power key pin
   pin 12  // power status pin
 *********************************************************************************
-create on 2013/12/5, version: 0.1
+created on 2013/12/5, version: 0.1
 by lawliet.zou(lawliet.zou@gmail.com)
 */
 
@@ -26,6 +26,3 @@ void setup(){
 void loop(){
   sim800.serialDebug();
 }
-
-
-

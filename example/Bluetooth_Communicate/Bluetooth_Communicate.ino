@@ -15,7 +15,7 @@ note: the following pins has been used and should not be used for other purposes
 this code has not been test because I have no Bluetooth with SPP 
 Profile, I will test it later!
 
-create on 2013/12/5, version: 0.1
+created on 2013/12/5, version: 0.1
 by lawliet.zou(lawliet.zou@gmail.com)
 */
 
@@ -32,7 +32,7 @@ int start = 0;
     
 void setup() {
   Serial.begin(9600);
-  while(!Serial);;
+  while(!Serial);
   Serial.println("Bluetooth Communication Test...");
   bluetooth.preInit();
   delay(3*1000);
