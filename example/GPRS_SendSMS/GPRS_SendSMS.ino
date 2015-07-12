@@ -20,7 +20,7 @@ GPRS gprs;
 
 void setup() {
   Serial.begin(9600);
-  while(!Serial);;
+  while(!Serial);
   Serial.println("GPRS - Send SMS Test ...");
   gprs.preInit();
   delay(1000);
