@@ -33,6 +33,12 @@
 
 #include "sim800.h"
 
+enum Protocol {
+    CLOSED = 0,
+    TCP    = 1,
+    UDP    = 2,
+};
+
 /** GPRS class.
  *  used to realize GPRS communication
  */

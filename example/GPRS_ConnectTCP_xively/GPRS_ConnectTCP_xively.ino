@@ -60,7 +60,7 @@ void setup() {
      delay(1000);
      Serial.println("init error");
   }  
-  while(!gprs.join("cmnet")) {  //change "cmnet" to your own VPN
+  while(!gprs.join("cmnet")) {  //change "cmnet" to your own APN
       Serial.println("gprs join network error");
       delay(2000);
   }

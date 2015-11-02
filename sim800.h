@@ -76,6 +76,10 @@ public:
      */
     void preInit(void);
     
+    /** Check if SIM800 readable
+     */
+    int checkReadable(void);
+    
     /** read from SIM800 module and save to buffer array
      *  @param  buffer  buffer array to save what read from SIM800 module
      *  @param  count   the maximal bytes number read from SIM800 module
@@ -84,7 +88,7 @@ public:
      *      0 on success
      *      -1 on error
      */
-    int readBuffer(char* buffer,int count, unsigned int timeOut);
+    int readBuffer(char* buffer,int count, unsigned int timeOut = DEFAULT_TIMEOUT);
 
     
     /** clean Buffer
@@ -100,7 +104,7 @@ public:
 
     /**send "AT" to SIM800 module
      */
-    void sendATTest(void);
+    int sendATTest(void);
     
     /**send '0x1A' to SIM800 Module
      */

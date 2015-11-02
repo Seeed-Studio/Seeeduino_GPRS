@@ -33,16 +33,33 @@
 void SIM800::preInit(void)
 {
     pinMode(SIM800_POWER_STATUS,INPUT);
-    delay(500);
-    if(LOW == digitalRead(SIM800_POWER_STATUS)){
-        delay(800);
-        digitalWrite(powerPin,HIGH);
-        delay(200);
-        digitalWrite(powerPin,LOW);
-        delay(2000);
-        digitalWrite(powerPin,HIGH);
-        delay(3000); 
+    delay(10);
+    if(LOW == digitalRead(SIM800_POWER_STATUS))
+    {
+        if(sendATTest() != 0)
+        {
+            delay(800);
+            digitalWrite(powerPin,HIGH);
+            delay(200);
+            digitalWrite(powerPin,LOW);
+            delay(2000);
+            digitalWrite(powerPin,HIGH);
+            delay(3000);
+            while( waitForResp("+CPIN: READY",2*DEFAULT_TIMEOUT) != 0 );
+            while( waitForResp("Call Ready",2*DEFAULT_TIMEOUT) != 0 );
+        }
+        while(sendATTest() != 0);                
+        Serial.println("Init O.K!");         
     }
+    else
+    {
+        Serial.println("Power check failed!");  
+    }
+}
+
+int SIM800::checkReadable(void)
+{
+    return serialSIM800.available();
 }
 
 int SIM800::readBuffer(char *buffer,int count, unsigned int timeOut)
@@ -53,7 +70,7 @@ int SIM800::readBuffer(char *buffer,int count, unsigned int timeOut)
     while(1) {
         while (serialSIM800.available()) {
             char c = serialSIM800.read();
-            if (c == '\r' || c == '\n') c = '$';
+            if (c == '\r' || c == '\n') c = '$';                            
             buffer[i++] = c;
             if(i > count-1)break;
         }
@@ -82,9 +99,10 @@ void SIM800::sendCmd(const char* cmd)
     serialSIM800.write(cmd);
 }
 
-void SIM800::sendATTest(void)
+int SIM800::sendATTest(void)
 {
-    sendCmdAndWaitForResp("AT\r\n","OK",DEFAULT_TIMEOUT);
+    int ret = sendCmdAndWaitForResp("AT\r\n","OK",DEFAULT_TIMEOUT);
+    return ret;
 }
 
 int SIM800::waitForResp(const char *resp, unsigned int timeout)

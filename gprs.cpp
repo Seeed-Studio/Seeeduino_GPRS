@@ -66,36 +66,40 @@ bool GPRS::join(const char *apn, const char *userName, const char *passWord)
     char gprsBuffer[32];
     //Select multiple connection
     //sim900_check_with_cmd("AT+CIPMUX=1\r\n","OK",DEFAULT_TIMEOUT,CMD);
-
-    //set APN. OLD VERSION
-/*    snprintf(cmd,sizeof(cmd),"AT+CSTT=\"%s\",\"%s\",\"%s\"\r\n",_apn,_userName,_passWord);
-    sim900_check_with_cmd(cmd, "OK\r\n", DEFAULT_TIMEOUT,CMD);
-*/
-
-
-    sendCmd("AT+CSTT=\"");
-    sendCmd(apn);
-    sendCmd("\",\"");
-    sendCmd(userName);
-    sendCmd("\",\"");
-    sendCmd(passWord);
-    //sim900_check_with_cmd("\"\r\n", "OK\r\n", CMD);
-    sendCmdAndWaitForResp("\"\r\n","OK\r\n",DEFAULT_TIMEOUT*3);
-
-    //Brings up wireless connection
-    sendCmdAndWaitForResp("AT+CIICR\r\n","OK\r\n",DEFAULT_TIMEOUT*3);
-
-    //Get local IP address
-    sendCmd("AT+CIFSR\r\n");
+    
+    
     cleanBuffer(ipAddr,32);
+    sendCmd("AT+CIFSR\r\n");    
     readBuffer(ipAddr,32,2);
-#if 1
+    
+    // If no IP address feedback than bring up wireless 
+    if( NULL != strstr(ipAddr, "ERROR") )
+    {
+        sendCmd("AT+CSTT=\"");
+        sendCmd(apn);
+        sendCmd("\",\"");
+        sendCmd(userName);
+        sendCmd("\",\"");
+        sendCmd(passWord);        
+        sendCmdAndWaitForResp("\"\r\n","OK\r\n",DEFAULT_TIMEOUT*3);
+        Serial.println("APN connected!");
+        
+        //Brings up wireless connection
+        sendCmdAndWaitForResp("AT+CIICR\r\n","OK\r\n",DEFAULT_TIMEOUT*3);
+         
+        //Get local IP address
+        int i = 0;
+        cleanBuffer(ipAddr,32);
+        sendCmd("AT+CIFSR\r\n");
+        readBuffer(ipAddr,32,2);        
+    }          
+#if 0    
     Serial.print("ipAddr: ");
     Serial.println(ipAddr);
 #endif
 
-    if(NULL != strstr(ipAddr,"AT+CIFSR")) {
-        _ip = str_to_ip(ipAddr+12);
+    if(NULL != strstr(ipAddr,"AT+CIFSR")) {        
+        _ip = str_to_ip(ipAddr+11);
         if(_ip != 0) {
             return true;
         }
@@ -106,14 +110,15 @@ bool GPRS::join(const char *apn, const char *userName, const char *passWord)
 uint32_t GPRS::str_to_ip(const char* str)
 {
     uint32_t ip = 0;
-    char* p = (char*)str;
+    char *p = (char*)str;
+    
     for(int i = 0; i < 4; i++) {
         ip |= atoi(p);
         p = strchr(p, '.');
         if (p == NULL) {
             break;
         }
-        ip <<= 8;
+        if(i < 3) ip <<= 8;
         p++;
     }
     return ip;
@@ -122,7 +127,12 @@ uint32_t GPRS::str_to_ip(const char* str)
 //HACERR lo de la IP gasta muuuucho espacio (ver .h y todo esto)
 char* GPRS::getIPAddress()
 {
-    snprintf(ip_string, sizeof(ip_string), "%d.%d.%d.%d", (_ip>>24)&0xff,(_ip>>16)&0xff,(_ip>>8)&0xff,_ip&0xff);
+    uint8_t a = (_ip>>24)&0xff;
+    uint8_t b = (_ip>>16)&0xff;
+    uint8_t c = (_ip>>8)&0xff;
+    uint8_t d = _ip&0xff;
+
+    snprintf(ip_string, sizeof(ip_string), "%d.%d.%d.%d", a,b,c,d);
     return ip_string;
 }
 
@@ -238,7 +248,7 @@ int GPRS::connectTCP(const char *ip, int port)
 {
     char cipstart[50];
     sprintf(cipstart, "AT+CIPSTART=\"TCP\",\"%s\",\"%d\"\r\n", ip, port);
-    if(0 != sendCmdAndWaitForResp(cipstart, "CONNECT OK", 10)) {// connect tcp
+    if(0 != sendCmdAndWaitForResp(cipstart, "CONNECT OK", 2*DEFAULT_TIMEOUT)) {// connect tcp
         ERROR("ERROR:CIPSTART");
         return -1;
     }
@@ -248,16 +258,17 @@ int GPRS::connectTCP(const char *ip, int port)
 int GPRS::sendTCPData(char *data)
 {
     char cmd[32];
-    int len = strlen(data);
+    int len = strlen(data); 
     snprintf(cmd,sizeof(cmd),"AT+CIPSEND=%d\r\n",len);
     if(0 != sendCmdAndWaitForResp(cmd,">",2*DEFAULT_TIMEOUT)) {
         ERROR("ERROR:CIPSEND");
         return -1;
     }
+        
     if(0 != sendCmdAndWaitForResp(data,"SEND OK",2*DEFAULT_TIMEOUT)) {
         ERROR("ERROR:SendTCPData");
         return -1;
-    }
+    }     
     return 0;
 }
 
