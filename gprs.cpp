@@ -46,16 +46,16 @@ int GPRS::init(void)
     return 0;
 
 #endif
-    if(!sendCmdAndWaitForResp("AT\r\n","OK\r\n",DEFAULT_TIMEOUT*3)){
-      return 0;
+    if(sendCmdAndWaitForResp("AT\r\n","OK\r\n",DEFAULT_TIMEOUT*3)){
+      return -1;
     }
-    if(!sendCmdAndWaitForResp("AT+CFUN=1\r\n","OK\r\n",DEFAULT_TIMEOUT*3)){
-      return 0;
+    if(sendCmdAndWaitForResp("AT+CFUN=1\r\n","OK\r\n",DEFAULT_TIMEOUT*3)){
+      return -1;
     }
-    if(!checkSIMStatus()) {
-		  return false;
+    if(checkSIMStatus()) {
+		  return -1;
     }
-    return 1;
+    return 0;
 
 }
 
@@ -64,10 +64,10 @@ bool GPRS::join(const char *apn, const char *userName, const char *passWord)
     char cmd[64];
     char ipAddr[32];
     char gprsBuffer[32];
+   
     //Select multiple connection
     //sim900_check_with_cmd("AT+CIPMUX=1\r\n","OK",DEFAULT_TIMEOUT,CMD);
-    
-    
+      
     cleanBuffer(ipAddr,32);
     sendCmd("AT+CIFSR\r\n");    
     readBuffer(ipAddr,32,2);
@@ -75,20 +75,21 @@ bool GPRS::join(const char *apn, const char *userName, const char *passWord)
     // If no IP address feedback than bring up wireless 
     if( NULL != strstr(ipAddr, "ERROR") )
     {
-        sendCmd("AT+CSTT=\"");
-        sendCmd(apn);
-        sendCmd("\",\"");
-        sendCmd(userName);
-        sendCmd("\",\"");
-        sendCmd(passWord);        
-        sendCmdAndWaitForResp("\"\r\n","OK\r\n",DEFAULT_TIMEOUT*3);
-        Serial.println("APN connected!");
+        if( 0 != sendCmdAndWaitForResp("AT+CSTT?\r\n", apn, DEFAULT_TIMEOUT) )
+        {
+            sendCmd("AT+CSTT=\"");
+            sendCmd(apn);
+            sendCmd("\",\"");
+            sendCmd(userName);
+            sendCmd("\",\"");
+            sendCmd(passWord);        
+            sendCmdAndWaitForResp("\"\r\n","OK\r\n",DEFAULT_TIMEOUT*3);
+        }
         
         //Brings up wireless connection
-        sendCmdAndWaitForResp("AT+CIICR\r\n","OK\r\n",DEFAULT_TIMEOUT*3);
+        sendCmd("AT+CIICR\r\n");
          
         //Get local IP address
-        int i = 0;
         cleanBuffer(ipAddr,32);
         sendCmd("AT+CIFSR\r\n");
         readBuffer(ipAddr,32,2);        

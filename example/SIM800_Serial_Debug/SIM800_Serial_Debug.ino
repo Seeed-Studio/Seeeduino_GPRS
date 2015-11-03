@@ -13,16 +13,23 @@ created on 2013/12/5, version: 0.1
 by lawliet.zou(lawliet.zou@gmail.com)
 */
 
-#include <sim800.h>
+#include "gprs.h"
 #include <SoftwareSerial.h>
 
-SIM800 sim800(9600);//BaudRate
+GPRS gprs(9600);//BaudRate
 
 void setup(){
   Serial.begin(9600);
-  sim800.preInit();//Power on SIM800
+  while(!Serial);
+  Serial.println("Serial debug begin...");
+  gprs.preInit();//Power on SIM800
+  while(0 != gprs.init())
+  {
+      Serial.println("sim800 init error!");
+  }
+  Serial.println("sim800 init O.K!");
 }
 
 void loop(){
-  sim800.serialDebug();
+  gprs.serialDebug();
 }

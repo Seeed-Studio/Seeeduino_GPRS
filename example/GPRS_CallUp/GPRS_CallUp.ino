@@ -25,7 +25,7 @@ void setup() {
   Serial.println("GPRS - Call up Test...");
   gprs.preInit();//power on SIM800
   delay(1000);
-  while(0 != gprs.init()) { //gprs init
+  while(0 !=gprs.init()) { //gprs init
       delay(1000);
       Serial.print("init error\r\n");
   }  

@@ -44,12 +44,10 @@ void SIM800::preInit(void)
             digitalWrite(powerPin,LOW);
             delay(2000);
             digitalWrite(powerPin,HIGH);
-            delay(3000);
-            while( waitForResp("+CPIN: READY",2*DEFAULT_TIMEOUT) != 0 );
-            while( waitForResp("Call Ready",2*DEFAULT_TIMEOUT) != 0 );
+            delay(3000);  
         }
         while(sendATTest() != 0);                
-        Serial.println("Init O.K!");         
+        //Serial.println("Init O.K!");         
     }
     else
     {
