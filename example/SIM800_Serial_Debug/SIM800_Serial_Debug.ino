@@ -23,7 +23,7 @@ void setup(){
   while(!Serial);
   Serial.println("Serial debug begin...");
   gprs.preInit();//Power on SIM800
-  while(0 != gprs.init())
+  while(0 != gprs.sendATTest())
   {
       Serial.println("sim800 init error!");
   }

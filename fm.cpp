@@ -33,11 +33,16 @@
 int FM::powerOn(void)
 {
     if(0 == fmPower){
-        if(0 != sendCmdAndWaitForResp("AT+FMOPEN=1\r\n", "OK", DEFAULT_TIMEOUT)) {  // connect tcp
-            ERROR("\r\nERROR:fmPowerOn\r\n");
-            return -1;
+        if(0 != sendCmdAndWaitForResp("AT+FMOPEN?\r\n", "+FMOPEN: 1,1\r\n", DEFAULT_TIMEOUT))
+        {
+            if(0 != sendCmdAndWaitForResp("AT+FMOPEN=1\r\n", "OK", DEFAULT_TIMEOUT)) {  // connect tcp
+                ERROR("\r\nERROR:fmPowerOn\r\n");
+                return -1;
+            }
+            fmPower = 1;
         }
-        fmPower = 1;
+        else
+            fmPower = 1;
     }
     
     return 0;
@@ -84,7 +89,7 @@ int FM::setVolume(int volume)
             ERROR("\r\nERROR:fmSetVolume\r\n");
             return -1;
         }
-    }
+    }    
     return 0;
 }
 

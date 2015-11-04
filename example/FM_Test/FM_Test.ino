@@ -29,7 +29,10 @@ void setup() {
     Serial.println("FM power on failed, try again...");
     delay(2000);
   }
+  Serial.println("FM power on!");
+  Serial.println("Setting volum...");
   fm.setVolume(6); //0,1,2,3,4,5,6
+  Serial.println("Scan channel...");
   fm.scanChannel();
   Serial.println("FM init success");
 }
