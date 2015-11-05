@@ -25,7 +25,7 @@ BlueTooth bluetooth;
 
 char bluetoothBuffer[BT_BUF_LEN];
 int start = 0;
-int ready = 0;
+int readyToCall = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -37,21 +37,22 @@ void setup() {
     Serial.println("bluetooth power on failed, try again...");
     delay(2000);
   }
-  Serial.println("Bluetooth is on."); 
+  Serial.println("Bluetooth is on.");   
   
-  // Check if bluetooth has connectted    
-  if(0 == bluetooth.sendCmdAndWaitForResp("AT+BTSTATUS?\r\n", "AVRCP", 2) ){
-    Serial.println("Bluetooth has connectted...");    
-    ready = 1;
-  }else{
-    ready = 0;
-    Serial.println("No bluetooth connectted, please open you phone's bluetooth and try to connect \"SIM800\"...");                 
-  }  
+  //Step 1: Check if bluetooth has connectted    
 }
 
 void loop() 
-{   
-  if(!ready)
+{
+  //Step 1: Check if bluetooth has connectted    
+  if(0 == bluetooth.sendCmdAndWaitForResp("AT+BTSTATUS?\r\n", "AVRCP", 2) ){
+    Serial.println("Bluetooth has connectted...");    
+    readyToCall = 1;
+  }else{
+    Serial.println("No bluetooth connectted, please open you phone's bluetooth and try to connect \"SIM800\"...");                 
+  }
+    
+  if(!readyToCall)
   {
     while(!bluetooth.serialSIM800.available());
     bluetooth.readBuffer(bluetoothBuffer,BT_BUF_LEN,2); //DEFAULT_TIMEOUT
@@ -62,25 +63,28 @@ void loop()
         
     if(NULL != strstr(bluetoothBuffer,"+BTPAIRING:")){  //Accept pairing
       bluetooth.cleanBuffer(bluetoothBuffer,64);
-      Serial.println("Bluetooth accept pairing...");
+      Serial.println("bluetooth accept pairing...");
       bluetooth.acceptPairing();      
-      Serial.println("Bluetooth paired...");
     }    
     else if(NULL != strstr(bluetoothBuffer,"+BTCONNECTING:")){  //Accept connection
-      bluetooth.cleanBuffer(bluetoothBuffer,64);      
-      Serial.println("Bluetooth connecting...");
-      bluetooth.acceptConnect();  
-      ready = 1;
-      Serial.println("Bluetooth successfully connected...");                    
-    }            
+      bluetooth.cleanBuffer(bluetoothBuffer,64);
+      Serial.println("New bluetooth device successfully connected...");                 
+      bluetooth.acceptConnect();      
+      readyToCall = 1;               
+    }     
+    
+    if(0 == bluetooth.sendCmdAndWaitForResp("AT+BTSTATUS?\r\n", "AVRCP", 2) ){
+      Serial.println("Bluetooth has connectted...");    
+      readyToCall = 1;
+    }
   }
   
-  while(ready)
+  if(readyToCall)
   {
-    if(0 != bluetooth.sendCmdAndWaitForResp("AT+BTSTATUS?\r\n", "AVRCP", 2) ){
-      Serial.println("Bluetooth didn't connected...");                    
-      ready = 0;
-    }
-    delay(1000);
-  }   
+    Serial.println("Making a phone call...");
+    while(0 != bluetooth.sendCmdAndWaitForResp("AT+BTATD=137********\r\n", "OK\r\n", 2*DEFAULT_TIMEOUT) );
+    Serial.println("Test O.K!...");
+    while(1);
+  }
+  
 }
