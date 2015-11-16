@@ -33,8 +33,8 @@ please follow the example sketch in example folder.
 + GPRS_LoopHandle —— answer the call & read the message.
 + GPRS_ConnectTCP —— communicate with xively. 
 + FM_Test —— Listening to FM radio
-+ Bluetooth_AT_Command —— use your bluetooth device to control seeeduino GPRS with AT Command.
-+ Bluetooth_Communicate —— bluetooth communication in SPP profile.
++ Bluetooth_AT_Command_And_Music_Play —— use your bluetooth device to control seeeduino GPRS with AT Command or use your smartphone to connect it and play music.
++ Bluetooth_Call_PhoneNumber —— Use your smartphone to connect seeeduino GPRS and a auto-call action will be executed.
 
 
 
