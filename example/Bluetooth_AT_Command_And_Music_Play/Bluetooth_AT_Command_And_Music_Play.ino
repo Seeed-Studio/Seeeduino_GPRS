@@ -1,5 +1,5 @@
 /*
-Sketch: Bluetooth AT Command 
+Sketch: Bluetooth_AT_Command_And_Music_Play
 
 Function: This sketch is used to test SIM800's Bluetooth function,you can connect
 your mobile phone with SIM800 module in SPP profile. then you can send AT command
@@ -13,6 +13,9 @@ note: the following pins has been used and should not be used for other purposes
 *********************************************************************************
 created on 2013/12/5, version: 0.1
 by lawliet.zou(lawliet.zou@gmail.com)
+
+Modified: Lambor
+Date: 2015-11-16
 */
 
 #include <bluetooth.h>
