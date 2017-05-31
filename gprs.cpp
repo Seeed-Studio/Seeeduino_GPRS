@@ -192,10 +192,10 @@ int GPRS::sendSMS(char *number, char *data)
     return 0;
 }
 
-int GPRS::readSMS(int messageIndex, char *message,int length)
+int GPRS::readSMS(int messageIndex, char *message, int length)
 {
     int i = 0;
-    char gprsBuffer[100];
+    char gprsBuffer[144]; // Buffer size for the SMS message
     char cmd[16];
     char *p,*s;
 
@@ -203,13 +203,13 @@ int GPRS::readSMS(int messageIndex, char *message,int length)
     delay(1000);
     sprintf(cmd,"AT+CMGR=%d\r\n",messageIndex);
     serialSIM800.write(cmd);
-    cleanBuffer(gprsBuffer,100);
-    readBuffer(gprsBuffer,100,DEFAULT_TIMEOUT);
+    cleanBuffer(gprsBuffer,144);
+    readBuffer(gprsBuffer,144,DEFAULT_TIMEOUT);
 
     if(NULL != ( s = strstr(gprsBuffer,"+CMGR"))){
-        if(NULL != ( s = strstr(gprsBuffer,"+32"))){
-            p = s + 6;
-            while((*p != '$')&&(i < length-1)) {
+        if(NULL != ( s = strstr(gprsBuffer,"REC"))){  // Search the beginning of the SMS message
+            p = s - 1;
+            while((i < length-1)) {
                 message[i++] = *(p++);
             }
             message[i] = '\0';
