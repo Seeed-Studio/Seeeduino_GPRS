@@ -5,7 +5,9 @@
  * Copyright (c) 2013 seeed technology inc.
  * Author        :   lawliet zou
  * Create Time   :   Dec 2013
- * Change Log    :
+ * Change Log    :   2017-05-31 GPRS::readSMS modified to support SMS international
+                     increment the buffer to read the whole message 
+                     Jose Zorrilla (jzorrilla@x-red.com)
  *
  * The MIT License (MIT)
  *

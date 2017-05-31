@@ -14,8 +14,9 @@ note: the following pins has been used and should not be used for other purposes
 created on 2013/12/5, version: 0.1
 by lawliet.zou(lawliet.zou@gmail.com)
 
-2017/05/31 
-Reads the full message, not only the first 20 characters (jzorrilla@x-red.com)
+Modified on 2017/05/31,
+Reads the full message, not only the first 20 characters
+by Jose Zorrilla (jzorrilla@x-red.com)
 */
 #include <gprs.h>
 #include <SoftwareSerial.h>
