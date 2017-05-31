@@ -13,12 +13,15 @@ note: the following pins has been used and should not be used for other purposes
 *********************************************************************************
 created on 2013/12/5, version: 0.1
 by lawliet.zou(lawliet.zou@gmail.com)
+
+2017/05/31 
+Reads the full message, not only the first 20 characters (jzorrilla@x-red.com)
 */
 #include <gprs.h>
 #include <SoftwareSerial.h>
 #include <stdio.h>
 
-char gprsBuffer[64];
+char gprsBuffer[140];
 int i = 0;
 char *s = NULL;
 int inComing = 0;
@@ -45,18 +48,18 @@ void loop() {
    }
    
    if(inComing){
-      gprs.readBuffer(gprsBuffer,32,DEFAULT_TIMEOUT);
-      Serial.print(gprsBuffer);
+      gprs.readBuffer(gprsBuffer, 140, DEFAULT_TIMEOUT);
+      Serial.println(gprsBuffer);
       
       if(NULL != strstr(gprsBuffer,"RING")) {
           gprs.answer();
       }else if(NULL != (s = strstr(gprsBuffer,"+CMTI: \"SM\""))) { //SMS: $$+CMTI: "SM",24$$
           char message[MESSAGE_LENGTH];
           int messageIndex = atoi(s+12);
-          gprs.readSMS(messageIndex, message,MESSAGE_LENGTH);
+          gprs.readSMS(messageIndex, message, MESSAGE_LENGTH);
           Serial.print(message);
      }
-     gprs.cleanBuffer(gprsBuffer,32);  
+     gprs.cleanBuffer(gprsBuffer,140);  
      inComing = 0;
    }
 }
