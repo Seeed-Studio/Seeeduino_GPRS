@@ -35,7 +35,7 @@ int BlueTooth::powerOn(void)
     sendATTest();
     sendATTest();
     if(0 == bluetoothPower){
-        if( 0 != sendCmdAndWaitForResp("AT+BTPOWER?\r\n", "OK", DEFAULT_TIMEOUT) )
+        if( 0 == sendCmdAndWaitForResp("AT+BTSTATUS?\r\n", "+BTSTATUS: 0", DEFAULT_TIMEOUT) )
         {
             if(0 != sendCmdAndWaitForResp("AT+BTPOWER=1\r\n", "OK", DEFAULT_TIMEOUT)) {
                 ERROR("\r\nERROR:bluetoothPowerOn\r\n");
@@ -53,12 +53,15 @@ int BlueTooth::powerOn(void)
 int BlueTooth::powerOff(void)
 {
     if(1 == bluetoothPower){
-        if(0 != sendCmdAndWaitForResp("AT+BTPOWER=0\r\n", "OK", DEFAULT_TIMEOUT)){
-            ERROR("\r\nERROR:bluetoothPowerOff\r\n");
-            return -1;
-        }else {
-            bluetoothPower = 0;
+        if(0 != sendCmdAndWaitForResp("AT+BTSTATUS?\r\n", "+BTSTATUS: 0", DEFAULT_TIMEOUT)) {
+            if(0!= sendCmdAndWaitForResp("AT+BTPOWER=0\r\n", "OK", DEFAULT_TIMEOUT)){
+                ERROR("\r\nERROR:bluetoothPowerOff\r\n");
+                return -1;
+            }else {
+                bluetoothPower = 0;
+            }
         }
+            
     }
     return 0;
 }
