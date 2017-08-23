@@ -42,7 +42,7 @@ enum Protocol {
 /** GPRS class.
  *  used to realize GPRS communication
  */
-#define MESSAGE_LENGTH  20
+#define MESSAGE_LENGTH  100
 
 class GPRS: public SIM800
 {
