@@ -1,0 +1,63 @@
+  
+#######################################
+# Syntax Coloring Map For 
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+serialSIM800	KEYWORD2
+preInit	KEYWORD2
+checkReadable	KEYWORD2
+readBuffer	KEYWORD2
+cleanBuffer	KEYWORD2
+sendCmd	KEYWORD2
+sendATTest	KEYWORD2
+waitForResp	KEYWORD2
+sendCmdAndWaitForResp	KEYWORD2
+serialDebug	KEYWORD2
+BlueTooth	KEYWORD2
+powerOn	KEYWORD2
+powerOff	KEYWORD2
+getHostDeviceName	KEYWORD2
+scanForTargetDevice	KEYWORD2
+sendPairingReqstToDevice	KEYWORD2
+acceptPairing	KEYWORD2
+unPair	KEYWORD2
+acceptConnect	KEYWORD2
+loopHandle	KEYWORD2
+disconnect	KEYWORD2
+connectInSPP	KEYWORD2
+recvInSPP	KEYWORD2
+sendInSPP	KEYWORD2
+FM	KEYWORD2
+setFreq	KEYWORD2
+setVolume	KEYWORD2
+scanChannel	KEYWORD2
+checkSignalStrength	KEYWORD2
+channelNext	KEYWORD2
+GPRS	KEYWORD2
+init	KEYWORD2
+join	KEYWORD2
+str_to_ip	KEYWORD2
+getIPAddress	KEYWORD2
+checkSIMStatus	KEYWORD2
+networkCheck	KEYWORD2
+sendSMS	KEYWORD2
+readSMS	KEYWORD2
+deleteSMS	KEYWORD2
+callUp	KEYWORD2
+answer	KEYWORD2
+connectTCP	KEYWORD2
+sendTCPData	KEYWORD2
+shutTCP	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
