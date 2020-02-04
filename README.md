@@ -1,4 +1,4 @@
-## Seeeduino GPRS
+## Seeeduino GPRS  [![Build Status](https://travis-ci.com/Seeed-Studio/Seeeduino_GPRS.svg?branch=master)](https://travis-ci.com/Seeed-Studio/Seeeduino_GPRS)
 
 ![](https://statics3.seeedstudio.com/seeed/file/2018-01/bazaar669815_seeeduinogprs.jpg)
 
